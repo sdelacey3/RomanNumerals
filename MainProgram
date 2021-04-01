@@ -1,0 +1,97 @@
+romToAr = {'I':1, 'V':5, 'X':10, 'L':50, 'C':100, 'D':500, 'M':1000}
+arToRom = {1000:"M", 900:"CM", 800:"DCCC", 700:"DCC", 600:"DC", 500:"D", 400:"CD", 300:"CCC", 200:"CC", 100:"C", 90:"XC", 80:"LXXX", 70:"LXX", 60:"LX", 50:"L", 40:"XL", 30:"XXX", 20:"XX", 10:"X", 9:"IX", 8:"VIII", 7:"VII", 6:"VI", 5:"V", 4:"IV", 3:"III", 2:"II", 1:"I", 0:""}
+
+def romanToAr(romVal):
+  arabic = 0
+  for i in range(len(romVal)-1):
+    if(romToAr[romVal[i]]< romToAr[romVal[i+1]]):
+      arabic -=romToAr[romVal[i]]
+    else:
+      arabic +=romToAr[romVal[i]]
+  arabic += romToAr[romVal[len(romVal)-1]]
+  return arabic
+
+def arabicToRom(arVal):
+  roman = ""
+  valCount = 1
+  digits = []
+  for i in range(len(arVal)-1, -1, -1):
+    dig = int(arVal[i])*valCount
+    digits.append(dig)
+    valCount = int(str(valCount)+ "0")
+  for i in range(len(digits)-1, -1,-1):
+    piece = arToRom[digits[i]]
+    roman = roman + piece
+  return roman
+    
+def addRom(rom1, rom2):
+  ara1 = int(romanToAr(rom1))
+  ara2 = int(romanToAr(rom2))
+  addval = ara1 + ara2
+  newRom = arabicToRom(str(addval))
+  return newRom
+
+def validRoman(romVal, question):
+  validRom = romVal
+  while (not(validRom.isalpha()) or not(validRom.isupper())):
+    print('Please enter a valid Roman numeral. (All upppercase letters)')
+    validRom = input(question)
+  valid = False
+  while(valid ==  False):
+    error = 0
+    if(len(validRom)>=4):
+      for i in range(len(validRom)-3):
+        if(validRom[i] == validRom[i+1] and validRom[i] == validRom[i+2] and validRom[i] == validRom[i+3]):
+          error += 1
+    if(len(validRom)>=2):
+      for i in range(len(validRom)-1):
+        if((validRom[i] == 'V' or validRom[i] == 'L' or validRom[i] == 'D') and validRom[i] == validRom[i+1]):
+          error +=  1
+    if(error==0):
+      valid = True
+    if(error > 0):
+      print('Please enter a valid Roman numeral. (Check repeated characters)')
+      validRom = input(question)
+  return validRom
+
+
+
+userVal = 'Y'
+
+while (userVal == 'Y'):
+
+  userChoice = input('What would you like to do? \n(1) Convert a Roman numeral to an Arabic number\n(2) Convert an Arabic number to a Roman numeral\n(3) Add 2 Roman numerals\n')
+  while not(userChoice.isdecimal()):
+    print('Please enter a valid option. (1,2,or 3)')
+    userChoice = input('What would you like to do? \n(1) Convert a Roman numeral to an Arabic number\n(2) Convert an Arabic number to a Roman numeral\n(3) Add 2 Roman numerals\n')
+
+
+  if userChoice == '1':
+    userRom = input('What is the Roman numeral you would like converted to Arabic numbers?\n')
+    userRom = validRoman(userRom,'What is the Roman numeral you would like converted to Arabic numbers?\n' )
+    araOutput = romanToAr(userRom)
+    print('Roman numeral: ' + userRom)
+    print('Arabic equivalent: ' + str(araOutput))
+
+  if userChoice == '2':
+    userAr = input('What is the Arabic number you would like converted to Roman numerals?\n')
+    while not(userAr.isdecimal()):
+      print('Please enter a valid arabic number. (All numeric characters)')
+      userAr = input('What is the Arabic number you would like converted to Roman numerals?\n')
+    romOutput = arabicToRom(userAr)
+    print('Arabic number: ' + userAr)
+    print('Roman equivalent: ' + romOutput)
+
+  if userChoice == '3':
+    userRom1 = input('What is your first Roman numeral?\n')
+    userRom1 = validRoman(userRom1, 'What is your first Roman numeral?\n')
+    userRom2 = input('What is your second Roman numeral?\n')
+    userRom2 = validRoman(userRom2, 'What is your second Roman numeral?\n')
+    addedVal = addRom(userRom1, userRom2)
+    print('Roman numerals: ' + userRom1 + ', ' + userRom2)
+    print('Combined value: ' + addedVal)
+
+  userVal = input('Would you like to complete another action? (Y or N)\n')
+  while (not(userVal.isalpha()) or not(userVal.isupper()) or not(len(userVal) == 1)):
+    print('Please enter a valid option.')
+    userVal = input('Would you like to complete another action? (Y or N)\n')
